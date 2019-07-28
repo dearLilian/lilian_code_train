@@ -1,0 +1,3 @@
+/Users/liwenbao/lilian/lilian_code_train/cpp/CMakeFiles/rebuild_cache.dir
+/Users/liwenbao/lilian/lilian_code_train/cpp/CMakeFiles/edit_cache.dir
+/Users/liwenbao/lilian/lilian_code_train/cpp/CMakeFiles/mymake.dir
