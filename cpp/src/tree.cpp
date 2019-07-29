@@ -17,6 +17,10 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <stack>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
 struct BinaryTreeNode {
@@ -83,9 +87,40 @@ void PrintBTreePre(BinaryTreeNode* root) {
     }
 }
 
+void PrintBTreePre_nodigui(BinaryTreeNode* root);
+void PrintBTreePre_nodigui(BinaryTreeNode* root) {
+    if (root == NULL) {
+        printf("Invalid param");
+    }
+
+    stack<BinaryTreeNode*> st;
+    vector<int> res;
+    BinaryTreeNode* node = root;
+
+    st.push(node);
+    while(!st.empty()) {
+        node = st.top();
+        st.pop();
+        res.push_back(node->m_nValue);
+        if (node->m_pRight != NULL) {
+            st.push(node->m_pRight);
+        }
+        if (node->m_pLeft != NULL) {
+            st.push(node->m_pLeft);
+        }
+    }
+    
+    for (int i = 0; i < res.size(); i++) {
+        cout << res[i] << ",";
+    }
+    cout << endl;
+
+}
+
+void PrintBTreeIn(BinaryTreeNode* root);
 void PrintBTreeIn(BinaryTreeNode* root) {
     if (root == NULL) {
-        printf("invalid param");
+        printf("invalid param\n");
     }
 
     if (root->m_pLeft != NULL) {
@@ -97,40 +132,65 @@ void PrintBTreeIn(BinaryTreeNode* root) {
     }
 }
 //中序遍历,非递归方式,需要用栈
+void PrintBTree_no_digui(BinaryTreeNode* root);
 void PrintBTree_no_digui(BinaryTreeNode* root) {
     if (root == NULL) {
         printf("Invalid param");
     }
 
     stack<BinaryTreeNode*> st;
+    vector<int> res;
+    BinaryTreeNode* node = root;
 
-    //入栈
-    st.push(root);
-    BinaryTreeNode* p = NULL;
-    p = root->m_pLeft;
-    while (p != NULL) {
-        st.push(p);
-        p = p->m_pLeft;
-    }
+    while(!st.empty() || node) {
+        while(node) {
+            st.push(node);
+            node = node -> m_pLeft;
+        }
 
-    //出栈
-    while (st.size() > 0) {
-        
-        p = st.top();
-        st.pop();
-        if (p->m_pLeft == NULL && p->mRight == NULL) {
-            printf("%d\n", p->m_nValue);
-        } else if (p->m_pRight != NULL) {
-            BinaryTreeNode* p_tmp = p->m_pRight;
-            st.push(p_tmp);
-            while (p_tmp -> m_pLeft != NULL) {
-                st.push(p_tmp->m_pLeft);
-            }
+        if(!st.empty()) {
+            node = st.top();
+            st.pop();
+            res.push_back(node->m_nValue);
+            node = node -> m_pRight;
         }
     }
-    
+
+    for (int i = 0; i < res.size(); i++) {
+        cout << res[i] << ",";
+    }
+    cout << endl;
 }
 
+void PrintBTreePost_nodigui(BinaryTreeNode* root);
+void PrintBTreePost_nodigui(BinaryTreeNode* root) {
+    if (root == NULL) {
+        printf("Invalid param");
+    }
+
+    stack<BinaryTreeNode*> st;
+    vector<int> res;
+    BinaryTreeNode* node = root;
+
+    st.push(node);
+    while(!st.empty()) {
+        node = st.top();
+        st.pop();
+        res.push_back(node->m_nValue);
+        if (node->m_pRight != NULL) {
+            st.push(node->m_pRight);
+        }
+        if (node->m_pLeft != NULL) {
+            st.push(node->m_pLeft);
+        }
+    }
+    reverse(res.begin(), res.end());
+    for (int i = 0; i < res.size(); i++) {
+        cout << res[i] << ",";
+    }
+    cout << endl;
+
+}
 BinaryTreeNode* GetNext(BinaryTreeNode* pNode) {
     if (pNode == NULL) {
         cout << "invalid param" << endl;
@@ -165,12 +225,23 @@ int main() {
     int length = 8;
     BinaryTreeNode* btree = ReconstructTree(preorder, inorder, length);
 
+    
+    printf("\npre 递归\n");
     PrintBTreePre(btree);
+    printf("\npre 非递归\n");
+    PrintBTreePre_nodigui(btree);
+    printf("\nin 递归\n");
+    PrintBTreeIn(btree);
+    printf("\nin 非递归\n");
+    PrintBTree_no_digui(btree);
+    
+    printf("\npost 非递归\n");
+    PrintBTreePost_nodigui(btree);
     
 
     BinaryTreeNode* pnext = GetNext(btree->m_pRight);
     printf("current node value: %d\n", btree->m_pRight->m_nValue );
-    printf("current node value: %d\n", pnext->m_nValue );
+    printf("next node value: %d\n", pnext->m_nValue );
     
     return 0;
 }
